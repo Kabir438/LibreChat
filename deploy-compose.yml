@@ -40,8 +40,9 @@ services:
     depends_on:
       - api
     restart: always
-    volumes:
-      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+    configs:
+      - source: nginx_conf
+        target: /etc/nginx/conf.d/default.conf
   mongodb:
     container_name: chat-mongodb
     # ports:  # Uncomment this to access mongodb from outside docker, not safe in deployment
@@ -83,6 +84,24 @@ services:
       - vectordb
     env_file:
       - .env
+
+configs:
+  nginx_conf:
+    content: |
+      server {
+          listen 80 default_server;
+          listen [::]:80 default_server;
+          server_name localhost;
+          client_max_body_size 25M;
+
+          location /api/ {
+              proxy_pass http://api:3080$$request_uri;
+          }
+
+          location / {
+              proxy_pass http://api:3080/;
+          }
+      }
 
 volumes:
   pgdata2:
