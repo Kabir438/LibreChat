@@ -1,10 +1,8 @@
 services:
   api:
-    # build:
-    #   context: .
-    #   dockerfile: Dockerfile.multi
-    #   target: api-build
-    image: registry.librechat.ai/danny-avila/librechat-dev-api:latest
+    build:
+      context: .
+      dockerfile: Dockerfile.rebrand
     container_name: OptixLogChat-API
     ports:
       - 3080:3080
